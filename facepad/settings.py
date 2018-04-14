@@ -102,6 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'api.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -123,8 +124,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    )
+        'rest_framework.authentication.TokenAuthentication',
+    ),
 }
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

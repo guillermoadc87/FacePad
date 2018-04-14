@@ -1,9 +1,14 @@
-from django.urls import path
-from rest_framework.authtoken.views import obtain_auth_token
+from django.urls import path, re_path
+from .serializers import CustomJWTSerializer
+from rest_framework.authtoken.views import ObtainAuthToken
 from . import views
 
 urlpatterns = [
-    path(r'api-token-auth/', obtain_auth_token),
-    path(r'register/', views.register),
-    path(r'example/', views.example_view)
+    path(r'api-token-auth/', ObtainAuthToken.as_view(serializer_class=CustomJWTSerializer)),
+    path(r'register/', views.RegisterView.as_view()),
+    re_path(r'content/(?P<slug>[\w-]+)/$', views.ContentView.as_view()),
+    re_path(r'friend/(?P<username>[\w-]+)/$', views.FriendsView.as_view()),
+    re_path(r'rate/(?P<slug>[\w-]+)/$', views.RateView.as_view()),
+    re_path(r'comments/(?P<slug>[\w-]+)/$', views.CommentView.as_view()),
+    re_path(r'(?P<username>[\w-]+)/$', views.UserView.as_view(), name='user-info'),
 ]
