@@ -36,25 +36,12 @@ class ContentSerializer(serializers.ModelSerializer):
         model = Content
         fields = ('title', 'slug', 'description', 'user', 'file')
 
-    def create(self, validated_data):
-        print(validated_data)
-        data = validated_data.copy()
-        data['user'] = self.context['request'].user
-
-        return super(ContentSerializer, self).create(data)
-
-    def validate_user(self, value):
-        print(value)
-        return value
-
-
 class RateSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
     class Meta:
         model = Rate
         fields = ('value', 'user')
-
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer()

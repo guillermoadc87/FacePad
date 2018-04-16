@@ -1,8 +1,8 @@
 from dateutil.parser import parse
-from rest_framework import status
-from rest_framework import permissions
+from rest_framework import permissions, status, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.generics import CreateAPIView
 from .serializers import UserSerializer, ContentSerializer, RateSerializer, CommentSerializer
 from .models import User, Content
 
@@ -35,11 +35,11 @@ class ContentView(APIView):
 
         return Response({'message': 'You are not allowed to view that content'}, status=status.HTTP_201_CREATED)
 
-    def post(self, request, slug):
-        serializer = ContentSerializer(data=request.data, context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({'message': 'content saved for user %s' % request.user})
+class CreateContentView(CreateAPIView):
+    serializer_class = ContentSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class FriendsView(APIView):
 
