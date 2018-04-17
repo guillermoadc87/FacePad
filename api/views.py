@@ -2,7 +2,7 @@ from dateutil.parser import parse
 from rest_framework import permissions, status, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView
 from .serializers import UserSerializer, ContentSerializer, RateSerializer, CommentSerializer
 from .models import User, Content
 
@@ -55,17 +55,17 @@ class FriendsView(APIView):
         else:
             return Response({'message': 'This user is not your friend'}, status=status.HTTP_201_CREATED)
 
-class UserView(APIView):
+class UserView(RetrieveAPIView):
+    lookup_field = 'username'
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
 
-    def get(self, request, username):
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            return Response({'message': 'Can not find user'}, status=status.HTTP_400_BAD_REQUEST)
+    def retrieve(self, request, *args, **kwargs):
+        user = self.get_object()
 
         if request.user.is_superuser or request.user == user or request.user in user.friends.all():
-            serialized = UserSerializer(user)
-            return Response(serialized.data, status=status.HTTP_201_CREATED)
+            serializer = self.get_serializer(user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response({'message': 'The user was not found'}, status=status.HTTP_404_NOT_FOUND)
 
