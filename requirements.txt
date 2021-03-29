@@ -9,7 +9,7 @@ idna==2.6
 libmagic==1.0
 post==1.0.1
 public==1.0.1
-Pygments==2.2.0
+Pygments==2.7.4
 python-dateutil==2.7.2
 python-magic==0.4.15
 python-magic-bin==0.4.14
